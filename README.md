@@ -66,8 +66,4 @@ After clicking "Run", the application will generate a grid of outputs based on a
 
 ### Observations on Parameter Effects
 
-[This section will be filled in by users after experimenting with the playground. It's intended for notes on how different parameters affect model outputs.]
-
-### Optimal Settings for Different Use Cases
-
-[This section will be filled in by users to document which parameter combinations work best for different types of prompts and desired outcomes.]
+![image](https://github.com/user-attachments/assets/3f22a64a-da50-4c82-8170-018c190f5eee)
