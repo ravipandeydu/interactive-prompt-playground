@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Prompt Playground</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container mt-4">
+    <h1 class="mb-4">Interactive Prompt Playground</h1>
+    
+    <div class="row">
+      <!-- Left Column: Input Controls -->
+      <div class="col-lg-4">
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Prompt Configuration</h5>
+          </div>
+          <div class="card-body">
+            <form id="promptForm">
+              <!-- System Prompt -->
+              <div class="mb-3">
+                <label for="systemPrompt" class="form-label">System Prompt</label>
+                <textarea class="form-control" id="systemPrompt" rows="3" placeholder="You are a helpful assistant..."></textarea>
+              </div>
+              
+              <!-- User Prompt -->
+              <div class="mb-3">
+                <label for="userPrompt" class="form-label">User Prompt</label>
+                <textarea class="form-control" id="userPrompt" rows="5" placeholder="Write your prompt here..."></textarea>
+              </div>
+              
+              <!-- Model Selection -->
+              <div class="mb-3">
+                <label for="modelSelect" class="form-label">Model</label>
+                <select class="form-select" id="modelSelect">
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                  <option value="gpt-4">GPT-4</option>
+                </select>
+              </div>
+              
+              <hr>
+              
+              <h5>Parameter Grid</h5>
+              <p class="text-muted small">Select values to include in the parameter grid</p>
+              
+              <!-- Temperature -->
+              <div class="mb-3">
+                <label class="form-label">Temperature</label>
+                <div class="d-flex">
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="0.0" id="temp0" name="temperature" checked>
+                    <label class="form-check-label" for="temp0">0.0</label>
+                  </div>
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="0.7" id="temp7" name="temperature" checked>
+                    <label class="form-check-label" for="temp7">0.7</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1.2" id="temp12" name="temperature" checked>
+                    <label class="form-check-label" for="temp12">1.2</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Max Tokens -->
+              <div class="mb-3">
+                <label class="form-label">Max Tokens</label>
+                <div class="d-flex">
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="50" id="tokens50" name="max_tokens" checked>
+                    <label class="form-check-label" for="tokens50">50</label>
+                  </div>
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="150" id="tokens150" name="max_tokens" checked>
+                    <label class="form-check-label" for="tokens150">150</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="300" id="tokens300" name="max_tokens" checked>
+                    <label class="form-check-label" for="tokens300">300</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Presence Penalty -->
+              <div class="mb-3">
+                <label class="form-label">Presence Penalty</label>
+                <div class="d-flex">
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="0.0" id="presence0" name="presence_penalty" checked>
+                    <label class="form-check-label" for="presence0">0.0</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1.5" id="presence15" name="presence_penalty" checked>
+                    <label class="form-check-label" for="presence15">1.5</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Frequency Penalty -->
+              <div class="mb-3">
+                <label class="form-label">Frequency Penalty</label>
+                <div class="d-flex">
+                  <div class="form-check me-3">
+                    <input class="form-check-input" type="checkbox" value="0.0" id="frequency0" name="frequency_penalty" checked>
+                    <label class="form-check-label" for="frequency0">0.0</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="1.5" id="frequency15" name="frequency_penalty" checked>
+                    <label class="form-check-label" for="frequency15">1.5</label>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Stop Sequence -->
+              <div class="mb-3">
+                <label for="stopSequence" class="form-label">Stop Sequence (optional)</label>
+                <input type="text" class="form-control" id="stopSequence" placeholder="Enter a stop sequence">
+              </div>
+              
+              <!-- Submit Button -->
+              <button type="submit" class="btn btn-primary w-100" id="runButton">
+                <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner" role="status" aria-hidden="true"></span>
+                Run Grid
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Column: Results Grid -->
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Results</h5>
+            <div>
+              <button class="btn btn-sm btn-light" id="exportButton" disabled>Export Results</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="resultsContainer">
+              <div class="text-center py-5 text-muted">
+                <p>Configure your prompt and parameters, then click "Run Grid" to see results</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="errorModalLabel">Error</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="errorModalBody">
+          An error occurred.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
